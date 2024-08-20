@@ -201,7 +201,7 @@ class createFloodedAreaAlgorithm(QgsProcessingAlgorithm):
                 "The drainage area must be in the DEM extension!"
                 )
 
-            FloodedArea = executePluginForArea(demLayer,
+            floodedArea = executePluginForArea(demLayer,
                                         drainageAreaInput,
                                         selectedParameter,
                                         parameterValue)
@@ -212,7 +212,7 @@ class createFloodedAreaAlgorithm(QgsProcessingAlgorithm):
                 )
             x = coordinates.x()
             y = coordinates.y()
-            FloodedArea = executePluginForCoord(demLayer,
+            floodedArea = executePluginForCoord(demLayer,
                                         selectedParameter,
                                         parameterValue,
                                         x,y)
@@ -220,17 +220,17 @@ class createFloodedAreaAlgorithm(QgsProcessingAlgorithm):
         (FA, dest_idb) = self.parameterAsSink(parameters,
                                               self.FLOODED_AREA,
                                               context,
-                                              FloodedArea.fields(),
-                                              FloodedArea.wkbType(),
-                                              FloodedArea.sourceCrs(),
+                                              floodedArea.fields(),
+                                              floodedArea.wkbType(),
+                                              floodedArea.sourceCrs(),
                                               layerOptions=["ENCODING=UTF-8"])
 
-        if FloodedArea.featureCount():
-            total = 100.0 / FloodedArea.featureCount()
+        if floodedArea.featureCount():
+            total = 100.0 / floodedArea.featureCount()
         else:
             total = 0
 
-        featuresFA = FloodedArea.getFeatures()
+        featuresFA = floodedArea.getFeatures()
 
         for current, feature in enumerate(featuresFA):
             # Stop the algorithm if cancel button has been clicked
