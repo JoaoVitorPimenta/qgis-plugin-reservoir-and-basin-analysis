@@ -69,6 +69,11 @@ def findParameter (dataAHV,parameter,parameterValue):
     areas = dataAHV[:, 0]
     volInterpolation = interp1d(volumes, heights, kind='linear')
     areaInterpolation = interp1d(areas, heights, kind='linear')
+    heightAreaInterpolation = interp1d(heights, areas, kind='linear')
+    heightVolInterpolation = interp1d(heights, volumes, kind='linear')
+    volAreaInterpolation = interp1d(volumes, areas, kind='linear')
+    areaVolInterpolation = interp1d(areas, volumes, kind='linear')
+
     errorMessageBelow = (
         'This value is below the minimum value of the curve: '
         )
@@ -92,7 +97,9 @@ def findParameter (dataAHV,parameter,parameterValue):
                 )
         water_elevation = float(parameterValue+heights[0]-1)
         water_height = float(parameterValue)
-        return water_elevation, water_height
+        water_area = float(heightAreaInterpolation(parameterValue+heights[0]-1))
+        water_volume = float(heightVolInterpolation(parameterValue+heights[0]-1))
+        return water_elevation, water_height, water_area, water_volume
 
     if parameter == ELEVATION_PARAMETER:
         if parameterValue < heights[0]:
@@ -105,7 +112,9 @@ def findParameter (dataAHV,parameter,parameterValue):
                 )
         water_elevation = float(parameterValue)
         water_height = float(water_elevation - heights[0] +1)
-        return water_elevation, water_height
+        water_area = float(heightAreaInterpolation(parameterValue))
+        water_volume = float(heightVolInterpolation(parameterValue))
+        return water_elevation, water_height, water_area, water_volume
 
     if parameter == AREA_PARAMETER:
         if parameterValue < areas[0]:
@@ -118,7 +127,9 @@ def findParameter (dataAHV,parameter,parameterValue):
                 )
         water_elevation = float(areaInterpolation(parameterValue))
         water_height = float(water_elevation - heights[0] +1)
-        return water_elevation, water_height
+        water_area = float(parameterValue)
+        water_volume = float(areaVolInterpolation(parameterValue))
+        return water_elevation, water_height, water_area, water_volume
     if parameter == VOLUME_PARAMETER:
         if parameterValue < volumes[0]:
             raise QgsProcessingException(
@@ -130,8 +141,10 @@ def findParameter (dataAHV,parameter,parameterValue):
                 )
         water_elevation = float(volInterpolation(parameterValue))
         water_height = float(water_elevation - heights[0] +1)
-        return water_elevation, water_height
-def extractFloodedArea (dem, mask, water_elev, water_height):
+        water_area = float(volAreaInterpolation(parameterValue))
+        water_volume = float(parameterValue)
+        return water_elevation, water_height, water_area, water_volume
+def extractFloodedArea (dem, mask, water_elev, water_height, water_area, water_volume):
     params8 = {
             'INPUT':dem,
             'MASK':mask,
@@ -181,14 +194,20 @@ def extractFloodedArea (dem, mask, water_elev, water_height):
     floodedArea = processing.run("native:dissolve",params11)['OUTPUT']
     elevField = QgsField('Elevation (m)', QVariant.Double,len=10, prec=2)
     heightField = QgsField('Height (m)', QVariant.Double, len=10, prec=2)
-    floodedArea.dataProvider().addAttributes([elevField,heightField])
+    areaField = QgsField('Area (m2)', QVariant.Double, len=10, prec=2)
+    volumeField = QgsField('Volume (m3)', QVariant.Double, len=10, prec=2)
+    floodedArea.dataProvider().addAttributes([elevField,heightField,areaField,volumeField])
     floodedArea.updateFields()
     floodedArea.startEditing()
     elevationFieldID = floodedArea.fields().indexOf('Elevation (m)')
     heightFieldID = floodedArea.fields().indexOf('Height (m)')
+    areaFieldID = floodedArea.fields().indexOf('Area (m2)')
+    volumeFieldID = floodedArea.fields().indexOf('Volume (m3)')
     for features in floodedArea.getFeatures():
         features.setAttribute(elevationFieldID, water_elev)
         features.setAttribute(heightFieldID, water_height)
+        features.setAttribute(areaFieldID, water_area)
+        features.setAttribute(volumeFieldID, water_volume)
         floodedArea.updateFeature(features)
     floodedArea.deleteAttributes([0,1])
     floodedArea.commitChanges()
@@ -200,16 +219,16 @@ def executePluginForCoord (dem,selectedParameter,parameterValue,x,y):
     drainageArea = extractDrainageArea(upslopeVector)
     hypsometricCurve = hypsometricCurves(dem,drainageArea)
     AHV = calculateAHV(hypsometricCurve)
-    elevation, height = findParameter(AHV,selectedParameter,
+    elevation, height, area, volume = findParameter(AHV,selectedParameter,
                                         parameterValue)
     floodedArea = extractFloodedArea(dem,drainageArea,elevation,
-                                        height)
+                                        height, area, volume)
     return floodedArea
-def executePluginForArea (dem,area,selectedParameter,parameterValue):
-    hypsometricCurve = hypsometricCurves(dem,area)
+def executePluginForArea (dem,drainageArea,selectedParameter,parameterValue):
+    hypsometricCurve = hypsometricCurves(dem,drainageArea)
     AHV = calculateAHV(hypsometricCurve)
-    elevation, height = findParameter(AHV,selectedParameter,
+    elevation, height, area, volume = findParameter(AHV,selectedParameter,
                                         parameterValue)
-    floodedArea = extractFloodedArea(dem,area,elevation,
-                                        height)
+    floodedArea = extractFloodedArea(dem,drainageArea,elevation,
+                                        height, area, volume)
     return floodedArea
