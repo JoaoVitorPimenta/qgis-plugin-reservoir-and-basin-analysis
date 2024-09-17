@@ -150,11 +150,6 @@ class createAreaHeightVolumeGraphAlgorithm(QgsProcessingAlgorithm):
         demLayerExt = demLayer.extent()
 
         if drainageAreaInput is not None:
-            if demLayerExt.contains(drainageAreaInput.extent()) is False:
-                raise QgsProcessingException(
-                "The drainage area must be in the DEM extension!"
-                )
-
             AHV, graph = executePluginForArea(demLayer,
                                         drainageAreaInput)
         if not coordinates.isEmpty():

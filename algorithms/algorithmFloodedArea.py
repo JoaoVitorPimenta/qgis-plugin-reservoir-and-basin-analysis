@@ -52,6 +52,7 @@ def hypsometricCurves (dem,drainageArea):
                                       )['OUTPUT_DIRECTORY']
     maskName = drainageArea.sourceName()
     pathHC = hypsometriccurve + '/histogram_' + maskName + '_1.csv'
+
     return pathHC
 def calculateAHV (areaHeightCurve):
     data = loadtxt(areaHeightCurve, delimiter=',',skiprows=1)

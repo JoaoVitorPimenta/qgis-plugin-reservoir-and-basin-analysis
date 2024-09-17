@@ -48,11 +48,11 @@ you check the height of the water depth for the flooded area with the given volu
 ![Flooded Area parameters input](./imgs/FAcreate.png)
 ![Flooded Area in map](./imgs/FAlayer.png)
 ![Height of Flooded Area](./imgs/FAheight.png)
-Another example, you want to study a dam caused by a small hydroelectric plant,
+Another example, you want to study a reservoir caused by a small hydroelectric plant,
 you want it to generate as much energy as possible,
 but flooding the smallest possible area and you need to find a middle ground,
 so first you generate the Area x Height x Volume graph,
-and find the optimal point where the two curves meet, 1660 meters,
+and see a good relation between the variables you can use, in this case, 1660 meters,
 then you extract the height corresponding to that point and generate
 the flooded area in the drainage basin with the height found on the graph.  
 ![Start](./imgs/start.png)
