@@ -38,11 +38,11 @@ def extractDrainageArea (upslopeVector):
     drainageArea = processing.run("native:dissolve",params10)['OUTPUT']
     return drainageArea
     #####################################
-def hypsometricCurves (dem,drainageArea):
+def hypsometricCurves (dem,drainageArea,step):
     params6 = {
             'INPUT_DEM':dem,
             'BOUNDARY_LAYER':drainageArea,
-            'STEP':1,
+            'STEP':step,
             'USE_PERCENTAGE':False,
             'OUTPUT_DIRECTORY':'TEMPORARY_OUTPUT'
     }
@@ -161,7 +161,7 @@ def extractFloodedArea (dem, mask, water_elev, water_height, water_area, water_v
     params9 = {
             'INPUT_RASTER':demclipped,
             'RASTER_BAND':1,
-            'TABLE':['0',water_elev,'1',water_elev,'4000','0'],
+            'TABLE':['0',water_elev,'1',water_elev,'40000','0'],
             'NO_DATA':-9999,
             'RANGE_BOUNDARIES':0,
             'NODATA_FOR_MISSING':False,
@@ -214,19 +214,19 @@ def extractFloodedArea (dem, mask, water_elev, water_height, water_area, water_v
     floodedArea.commitChanges()
 
     return floodedArea
-def executePluginForCoord (dem,selectedParameter,parameterValue,x,y):
+def executePluginForCoord (dem,selectedParameter,parameterValue,x,y,spacing):
     upslopeRaster = extractUpslopeArea(dem,x,y)
     upslopeVector = polygonizeUpslopeArea(upslopeRaster)
     drainageArea = extractDrainageArea(upslopeVector)
-    hypsometricCurve = hypsometricCurves(dem,drainageArea)
+    hypsometricCurve = hypsometricCurves(dem,drainageArea,spacing)
     AHV = calculateAHV(hypsometricCurve)
     elevation, height, area, volume = findParameter(AHV,selectedParameter,
                                         parameterValue)
     floodedArea = extractFloodedArea(dem,drainageArea,elevation,
                                         height, area, volume)
     return floodedArea
-def executePluginForArea (dem,drainageArea,selectedParameter,parameterValue):
-    hypsometricCurve = hypsometricCurves(dem,drainageArea)
+def executePluginForArea (dem,drainageArea,selectedParameter,parameterValue,spacing):
+    hypsometricCurve = hypsometricCurves(dem,drainageArea,spacing)
     AHV = calculateAHV(hypsometricCurve)
     elevation, height, area, volume = findParameter(AHV,selectedParameter,
                                         parameterValue)

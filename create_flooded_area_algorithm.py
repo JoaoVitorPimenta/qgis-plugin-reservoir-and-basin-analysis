@@ -72,6 +72,7 @@ class createFloodedAreaAlgorithm(QgsProcessingAlgorithm):
     ELEVATION_PARAMETER = 'ELEVATION (m)'
     AREA_PARAMETER = 'AREA (m2)'
     VOLUME_PARAMETER = 'VOLUME (m3)'
+    VERTICAL_SPACING = 'VERTICAL SPACING (m)'
     FLOODED_AREA = 'FLOODED_AREA'
 
     def initAlgorithm(self, config):
@@ -131,6 +132,15 @@ class createFloodedAreaAlgorithm(QgsProcessingAlgorithm):
             )
         )
 
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                self.VERTICAL_SPACING,
+                'Vertical step (in meters):',
+                type=QgsProcessingParameterNumber.Double,
+                defaultValue='0.00'
+            )
+        )
+
         # We add a feature sink in which to store our processed features (this
         # usually takes the form of a newly created vector layer when the
         # algorithm is run in QGIS).
@@ -180,6 +190,11 @@ class createFloodedAreaAlgorithm(QgsProcessingAlgorithm):
                                                         self.DRAINAGE_AREA,
                                                         context
                                                         )
+        verticalSpacingInput = self.parameterAsDouble(
+                                                        parameters,
+                                                        self.VERTICAL_SPACING,
+                                                        context
+                                                        )
         if drainageAreaInput is None and coordinates.isEmpty():
             raise QgsProcessingException(
                 'Outlet point or drainage area, must be provided!'
@@ -188,7 +203,10 @@ class createFloodedAreaAlgorithm(QgsProcessingAlgorithm):
             raise QgsProcessingException(
                 'Only one, outlet point or drainage area, must be provided!'
                                          )
-
+        if verticalSpacingInput <0:
+            raise QgsProcessingException(
+                'Vertical spacing needs be positive!'
+                                         )
         demLayerExt = demLayer.extent()
 
 
@@ -204,7 +222,8 @@ class createFloodedAreaAlgorithm(QgsProcessingAlgorithm):
             floodedArea = executePluginForArea(demLayer,
                                         drainageAreaInput,
                                         selectedParameter,
-                                        parameterValue)
+                                        parameterValue,
+                                        verticalSpacingInput)
         if not coordinates.isEmpty():
             if demLayerExt.contains(coordinates) is False:
                 raise QgsProcessingException(
@@ -215,7 +234,8 @@ class createFloodedAreaAlgorithm(QgsProcessingAlgorithm):
             floodedArea = executePluginForCoord(demLayer,
                                         selectedParameter,
                                         parameterValue,
-                                        x,y)
+                                        x,y,
+                                        verticalSpacingInput)
 
         (FA, dest_idb) = self.parameterAsSink(parameters,
                                               self.FLOODED_AREA,

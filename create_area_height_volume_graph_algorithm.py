@@ -37,7 +37,8 @@ from qgis.core import (QgsProcessingAlgorithm,
                        QgsProcessingException,
                        QgsProcessingParameterPoint,
                        QgsProcessingParameterVectorLayer,
-                       QgsProcessingParameterFileDestination)
+                       QgsProcessingParameterFileDestination,
+                       QgsProcessingParameterNumber)
 from numpy import savetxt
 from .algorithms.algorithmGraph import executePluginForArea, executePluginForCoord
 import os
@@ -64,6 +65,7 @@ class createAreaHeightVolumeGraphAlgorithm(QgsProcessingAlgorithm):
     INPUT_DEM = 'INPUT_DEM'
     DRAINAGE_AREA = 'DRAINAGE_AREA'
     INPUT_COORDINATES = 'INPUT_COORDINATES'
+    VERTICAL_SPACING = 'VERTICAL_SPACING (m)'
     CSV = 'CSV'
     GRAPH = 'GRAPH'
 
@@ -100,6 +102,16 @@ class createAreaHeightVolumeGraphAlgorithm(QgsProcessingAlgorithm):
                 optional = True
             )
         )
+
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                self.VERTICAL_SPACING,
+                'Vertical step (in meters):',
+                type=QgsProcessingParameterNumber.Double,
+                defaultValue='0.00'
+            )
+        )
+
 
         # We add a feature sink in which to store our processed features (this
         # usually takes the form of a newly created vector layer when the
@@ -144,14 +156,23 @@ class createAreaHeightVolumeGraphAlgorithm(QgsProcessingAlgorithm):
                                                         self.DRAINAGE_AREA,
                                                         context
                                                         )
-
+        verticalSpacingInput = self.parameterAsDouble(
+                                                        parameters,
+                                                        self.VERTICAL_SPACING,
+                                                        context
+                                                        )
         # Compute the number of steps to display within the progress bar and
         # get features from source
+        if verticalSpacingInput <0:
+            raise QgsProcessingException(
+                'Vertical spacing needs be positive!'
+                                         )
         demLayerExt = demLayer.extent()
 
         if drainageAreaInput is not None:
             AHV, graph = executePluginForArea(demLayer,
-                                        drainageAreaInput)
+                                        drainageAreaInput,
+                                        verticalSpacingInput)
         if not coordinates.isEmpty():
             if demLayerExt.contains(coordinates) is False:
                 raise QgsProcessingException(
@@ -160,7 +181,8 @@ class createAreaHeightVolumeGraphAlgorithm(QgsProcessingAlgorithm):
             x = coordinates.x()
             y = coordinates.y()
             AHV, graph = executePluginForCoord(demLayer,
-                                                x,y)
+                                                x,y,
+                                                verticalSpacingInput)
 
 
         (AHVdata) = self.parameterAsFileOutput(parameters, self.CSV,

@@ -36,11 +36,11 @@ def extractDrainageArea (upslopeVector):
     drainageArea = processing.run("native:dissolve",params10)['OUTPUT']
     return drainageArea
     #####################################
-def hypsometricCurves (dem,drainageArea):
+def hypsometricCurves (dem,drainageArea,step):
     params6 = {
             'INPUT_DEM':dem,
             'BOUNDARY_LAYER':drainageArea,
-            'STEP':1,
+            'STEP':step,
             'USE_PERCENTAGE':False,
             'OUTPUT_DIRECTORY':'TEMPORARY_OUTPUT'
     }
@@ -102,16 +102,16 @@ def graphAHV(npAHVData):
                         )
 
     return fig
-def executePluginForCoord (dem,x,y):
+def executePluginForCoord (dem,x,y,step):
     upslopeRaster = extractUpslopeArea(dem,x,y)
     upslopeVector = polygonizeUpslopeArea(upslopeRaster)
     drainageArea = extractDrainageArea(upslopeVector)
-    hypsometricCurve = hypsometricCurves(dem,drainageArea)
+    hypsometricCurve = hypsometricCurves(dem,drainageArea,step)
     AHV = calculateAHV(hypsometricCurve)
     graph = graphAHV(AHV)
     return AHV, graph
-def executePluginForArea (dem,area):
-    hypsometricCurve = hypsometricCurves(dem,area)
+def executePluginForArea (dem,area,step):
+    hypsometricCurve = hypsometricCurves(dem,area,step)
     AHV = calculateAHV(hypsometricCurve)
     graph = graphAHV(AHV)
     return AHV, graph
