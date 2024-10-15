@@ -128,7 +128,8 @@ class createFloodedAreaAlgorithm(QgsProcessingAlgorithm):
                 self.INPUT_PARAMETER,
                 'Parameter value',
                 type=QgsProcessingParameterNumber.Double,
-                defaultValue=''
+                defaultValue='',
+                maxValue=1e12
             )
         )
 
