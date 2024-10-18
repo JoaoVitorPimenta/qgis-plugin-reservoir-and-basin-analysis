@@ -10,7 +10,7 @@ version=0.1
 author=João Vitor Pimenta
 email=jvpjoaopimenta@gmail.com
 
-about=This plugin offers some analysis tools for reservoirs, such as calculating the flood area given a volume, generating an Area - Height - Volume graph, among others.
+about=This plugin offers some reservoir analysis tools, such as calculating the flood area, creating the flooded area polygon, generating an Area - Elevation - Volume graph and creating drainage areas. The plugin can be used for purposes other than reservoirs, such as studying floods caused by extreme events, for example. The plugin is easy and intuitive, and is suitable for anyone to use.
 
 tracker=https://github.com/JoaoVitorPimenta/qgis-plugin-reservoir-analysis/issues
 repository=https://github.com/JoaoVitorPimenta/qgis-plugin-reservoir-analysis
@@ -37,7 +37,7 @@ deprecated=False
 # Since QGIS 3.8, a comma separated list of plugins to be installed
 # (or upgraded) can be specified.
 # Check the documentation for more information.
-# plugin_dependencies=
+# plugin_dependencies=Saga GIS Next Gen, GDAL, Numpy, Scipy, Plotly. Saga GIS Next Gen and GDAL needs to be enabled in QGIS plugins
 
 Category of the plugin: Raster, Vector, Database or Web
 # category=
