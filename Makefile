@@ -1,5 +1,5 @@
 #/***************************************************************************
-# ReservoirAnalysis
+# ReservoirAndBasinAnalysis
 #
 # This plugin offers some analysis tools for reservoirs.
 #							 -------------------
@@ -38,13 +38,13 @@ LOCALES =
 # translation
 SOURCES = \
 	__init__.py \
-	reservoir_analysis.py 
+	Reservoir_and_Basin_Analysis.py 
 
-PLUGINNAME = reservoir_analysis
+PLUGINNAME = Reservoir_and_Basin_Analysis
 
 PY_FILES = \
 	__init__.py \
-	reservoir_analysis.py 
+	Reservoir_and_Basin_Analysis.py 
 
 UI_FILES = 
 

@@ -3,14 +3,14 @@
 # This file should be included when you package your plugin.# Mandatory items:
 
 [general]
-name=Reservoir Analysis
+name=Reservoir and Basin Analysis
 qgisMinimumVersion=3.0
 description=This plugin offers some analysis tools for reservoirs.
 version=0.1
 author=João Vitor Pimenta
 email=jvpjoaopimenta@gmail.com
 
-about=This plugin provides reservoir analysis tools: calculation of the flood area, creation of the flooded area polygon, generation of Area - Elevation - Volume graph and creation of drainage areas. The plugin can be used for purposes other than reservoirs, such as studying floods caused by extreme events, for example. The plugin is easy and intuitive and suitable for anyone to use.
+about=This plugin provides Reservoir and Basin Analysis tools: calculation of the flood area, creation of the flooded area polygon, generation of Area - Elevation - Volume graph and creation of drainage areas. The plugin can be used for purposes other than reservoirs, such as studying floods caused by extreme events, for example. The plugin is easy and intuitive and suitable for anyone to use.
 
 tracker=https://github.com/JoaoVitorPimenta/qgis-plugin-reservoir-analysis/issues
 repository=https://github.com/JoaoVitorPimenta/qgis-plugin-reservoir-analysis
