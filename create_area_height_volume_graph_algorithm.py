@@ -97,7 +97,7 @@ class createAreaHeightVolumeGraphAlgorithm(QgsProcessingAlgorithm):
         self.addParameter(
             QgsProcessingParameterPoint(
                 self.INPUT_COORDINATES,
-                'Outlet point coordinates (format: lat,long)',
+                'Outlet point coordinates (format: x,y)',
                 defaultValue=None,
                 optional = True
             )
