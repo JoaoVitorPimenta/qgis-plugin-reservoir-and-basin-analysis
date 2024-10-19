@@ -1,4 +1,4 @@
-# Reservoir and Basin Analysis
+# Reservoir & Basin Analysis
 
 This plugin can help the user create a pre-project for a reservoir,
 whether to contain water in flood events or to generate energy, for example.

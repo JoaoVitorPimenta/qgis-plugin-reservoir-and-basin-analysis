@@ -68,7 +68,7 @@ class ReservoirAndBasinAnalysisProvider(QgsProcessingProvider):
         string should be a unique, short, character only string, eg "qgis" or
         "gdal". This string should not be localised.
         """
-        return 'Reservoir and Basin Analysis'
+        return 'Reservoir & Basin Analysis'
 
     def name(self):
         """
@@ -77,7 +77,7 @@ class ReservoirAndBasinAnalysisProvider(QgsProcessingProvider):
 
         This string should be short (e.g. "Lastools") and localised.
         """
-        return self.tr('Reservoir and Basin Analysis')
+        return self.tr('Reservoir & Basin Analysis')
 
     def icon(self):
         """
