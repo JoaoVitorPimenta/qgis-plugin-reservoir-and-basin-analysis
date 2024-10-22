@@ -93,7 +93,7 @@ class createFloodedAreaAlgorithm(QgsProcessingAlgorithm):
         self.addParameter(
             QgsProcessingParameterFeatureSource(
                 self.DRAINAGE_AREA,
-                self.tr('Drainage Area'),
+                self.tr('Area'),
                 defaultValue=None,
                 optional=True,
                 types = [QgsProcessing.TypeVectorPolygon]

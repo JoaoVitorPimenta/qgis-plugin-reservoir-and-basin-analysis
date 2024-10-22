@@ -63,7 +63,7 @@ class createAreaHeightVolumeGraphAlgorithm(QgsProcessingAlgorithm):
     # calling from the QGIS console.
 
     INPUT_DEM = 'INPUT_DEM'
-    DRAINAGE_AREA = 'DRAINAGE_AREA'
+    AREA = 'AREA'
     INPUT_COORDINATES = 'INPUT_COORDINATES'
     VERTICAL_SPACING = 'VERTICAL_SPACING (m)'
     CSV = 'CSV'
@@ -87,8 +87,8 @@ class createAreaHeightVolumeGraphAlgorithm(QgsProcessingAlgorithm):
 
         self.addParameter(
             QgsProcessingParameterVectorLayer(
-                self.DRAINAGE_AREA,
-                self.tr('Drainage Area'),
+                self.AREA,
+                self.tr('Area'),
                 defaultValue=None,
                 optional=True
             )
@@ -153,7 +153,7 @@ class createAreaHeightVolumeGraphAlgorithm(QgsProcessingAlgorithm):
                                             )
         drainageAreaInput = self.parameterAsVectorLayer(
                                                         parameters,
-                                                        self.DRAINAGE_AREA,
+                                                        self.AREA,
                                                         context
                                                         )
         verticalSpacingInput = self.parameterAsDouble(
